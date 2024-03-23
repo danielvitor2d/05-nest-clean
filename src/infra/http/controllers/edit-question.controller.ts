@@ -3,43 +3,46 @@ import {
   Body,
   Controller,
   HttpCode,
-  Post,
+  Param,
+  Put,
 } from '@nestjs/common'
 import { z } from 'zod'
 
-import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/create-question'
+import { EditQuestionUseCase } from '@/domain/forum/application/use-cases/edit-question'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 
-const createQuestionBodySchema = z.object({
+const editQuestionBodySchema = z.object({
   title: z.string(),
   content: z.string(),
 })
 
-const bodyValidationPipe = new ZodValidationPipe(createQuestionBodySchema)
+const bodyValidationPipe = new ZodValidationPipe(editQuestionBodySchema)
 
-type CreateQuestionBodySchema = z.infer<typeof createQuestionBodySchema>
+type EditQuestionBodySchema = z.infer<typeof editQuestionBodySchema>
 
-@Controller('/questions')
-export class CreateQuestionController {
-  constructor(private createQuestion: CreateQuestionUseCase) {}
+@Controller('/questions/:id')
+export class EditQuestionController {
+  constructor(private editQuestion: EditQuestionUseCase) {}
 
-  @Post()
-  @HttpCode(201)
+  @Put()
+  @HttpCode(204)
   async handle(
-    @Body(bodyValidationPipe) body: CreateQuestionBodySchema,
+    @Body(bodyValidationPipe) body: EditQuestionBodySchema,
     @CurrentUser() user: UserPayload,
+    @Param('id') questionId: string,
   ) {
     const { title, content } = body
     const { sub: userId } = user
 
-    const result = await this.createQuestion.execute({
+    const result = await this.editQuestion.execute({
       title,
       content,
       attachmentIds: [],
       authorId: userId,
+      questionId,
     })
 
     if (result.isLeft()) {

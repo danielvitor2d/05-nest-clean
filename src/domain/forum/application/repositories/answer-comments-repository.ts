@@ -1,4 +1,5 @@
 import { PaginationParams } from '@/core/repositories/pagination-params'
+
 import { AnswerComment } from '../../enterprise/entities/answer-comment'
 
 export abstract class AnswerCommentsRepository {

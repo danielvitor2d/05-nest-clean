@@ -1,4 +1,4 @@
-import { Question as PrismaQuestion, Prisma } from '@prisma/client'
+import { Prisma, Question as PrismaQuestion } from '@prisma/client'
 
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Question } from '@/domain/forum/enterprise/entities/question'

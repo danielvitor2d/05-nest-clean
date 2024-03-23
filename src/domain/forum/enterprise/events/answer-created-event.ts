@@ -1,4 +1,5 @@
 import { DomainEvent } from '@/core/events/domain-event'
+
 import { Answer } from '../entities/answer'
 
 export class AnswerCreatedEvent implements DomainEvent {
